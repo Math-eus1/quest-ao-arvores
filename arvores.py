@@ -1,21 +1,13 @@
-'''numero_casos = int(input())
-
-for cases in numero_casos:
-    quantidade_numeros = int(input())'''
 class No(object):
-    def __init__(self, chave, valor = None, direita = None, esquerda = None):
-        self.chave = chave
+    def __init__(self, valor, direita = None, esquerda = None):
         self.valor = valor
         self.direita = direita
         self.esquerda = esquerda
 
     def __str__(self):
-        return f"{self.chave}"
+        return f"{self.valor}"
     
-    def travessia(self, visit, order = 'pre'):
-        """Percorre a árvore na ordem fornecida como parâmetro (pre, pos ou in)
-       visitando os nós com a função visit() recebida como parâmetro.
-        """
+    def travessia(self, visit, order):
         if order == 'pre':
             visit(self)
         if self.esquerda is not None:
@@ -27,64 +19,45 @@ class No(object):
         if order == 'post':
             visit(self)
 
-    
-    def remover(self, chave): #encontrar o nó
-        #se a chave(valor que eu quero) é menor, vai pra esquerda, se é maior, vai pra direita
-        if chave < self.chave:
-            self.esquerda = self.esquerda.remover(chave)
-        if chave > self.chave:
-            self.direita = self.direita.remover(chave)
-
-        else: #chave atual é igual ao que eu quero
-            if self.esquerda is None:
-                return self.direita
-            if self.direita is None:
-                return self.esquerda
-        #agora a remoção de um nó com dois filhos
-            tmp = self.direita._min()
-            self.chave, self.valor = tmp.chave, tmp.valor
-            self.direita._remover_min()
+    def get(self, valor):
+        if self.valor == valor:
             return self
-        
-    def _min(self):
-        #função para encontrar o valor minimo, que seja maior do que o nó a ser apagado
-        #De início, é importante considerar que a chave do nó a ser removido
-        #não será apagada, ela terá seu valor substituído pela value e key 
-        #de quem irá substituir
-        if self.esquerda is None:
-            return self
-        else:
-            return self.esquerda._min()
-
-    def _remover_min(self):
-        #agora sim é o processo de remoção de quem serviu para substituire teve seu valor copiado
-        #por quem seria substituido
-        if self.esquerda is None:
-            return self.direita
-        else:
-            self.esquerda = self.esquerda._remover_min()
-            return self
-
-    def get(self, chave):
-        if self.chave == chave:
-            return self
-        node = self.esquerda if chave < self.chave else self.direita
+        node = self.esquerda if valor < self.valor else self.direita
         if node is not None:
-            return node.get(chave)
+            return node.get(valor)
 
-    def adicionar(self, node):
-        if node.chave < self.chave:
-            if self.esquerda is None:
-                self.esquerda = node
-                return node
-            else:
-                return self.esquerda.adicionar(node)
-        else:
-            if self.direita is None:
-                self.direita = node
-                return node
-            else:
-                return self.direita.adicionar(node)
+    def adicionar2(node, valor):
+        if node is None:
+            return No(valor)
+        if valor < node.valor:
+            node.esquerda = No.adicionar2(node.esquerda, valor)
+        elif valor > node.valor:
+            node.direita = No.adicionar2(node.direita, valor)
+        return node
+            
+numero_casos = int(input())
+
+for casos in range(numero_casos):
+    quantidade_numeros = int(input())
+    numeros = list(map(int, input().split()))
+    node = None
+    for valor in numeros:
+        node = No.adicionar2(node, valor)
+    pre_ordem = []
+    em_ordem = []
+    pos_ordem = []
+
+    node.travessia(visit=lambda No: pre_ordem.append(str(No.valor)), order='pre')
+    node.travessia(visit=lambda No: em_ordem.append(str(No.valor)), order='in')
+    node.travessia(visit=lambda No: pos_ordem.append(str(No.valor)), order='post')
+    
+    print(f"Case {casos+1}:")
+    print("Pre.:", ' '.join(pre_ordem))
+    print("In..:", ' '.join(em_ordem))
+    print("Post:", ' '.join(pos_ordem))
+    print("")
+        
+
 
 # ------------ Lógica da Questão --------------#
 '''
