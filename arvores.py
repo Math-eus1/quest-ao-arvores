@@ -26,13 +26,13 @@ class No(object):
         if node is not None:
             return node.get(valor)
 
-    def adicionar2(node, valor):
+    def adicionar(node, valor):
         if node is None:
             return No(valor)
         if valor < node.valor:
-            node.esquerda = No.adicionar2(node.esquerda, valor)
+            node.esquerda = No.adicionar(node.esquerda, valor)
         elif valor > node.valor:
-            node.direita = No.adicionar2(node.direita, valor)
+            node.direita = No.adicionar(node.direita, valor)
         return node
             
 numero_casos = int(input())
@@ -42,7 +42,7 @@ for casos in range(numero_casos):
     numeros = list(map(int, input().split()))
     node = None
     for valor in numeros:
-        node = No.adicionar2(node, valor)
+        node = No.adicionar(node, valor)
     pre_ordem = []
     em_ordem = []
     pos_ordem = []
